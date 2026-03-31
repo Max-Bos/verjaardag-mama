@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voor Moeder</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        min-height: 100vh;
+        background: #1a0a0f;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-family: "Lora", serif;
+      }
+      canvas#bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+      }
+      .petals-wrap {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .petal {
+        position: absolute;
+        top: -30px;
+        border-radius: 50% 0 50% 0;
+        opacity: 0;
+        animation: fall linear infinite;
+      }
+      @keyframes fall {
+        0% {
+          opacity: 0;
+          transform: translateY(0) rotate(0deg) scale(1);
+        }
+        5% {
+          opacity: 0.7;
+        }
+        90% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(110vh) rotate(540deg) scale(0.6);
+        }
+      }
+      .screen {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 2.5rem 2.5rem;
+        max-width: 540px;
+        width: 90%;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* heart */
+      .heart-wrap {
+        margin-bottom: 1.6rem;
+        animation: heartbeat 2.2s ease-in-out infinite;
+      }
+      .heart-wrap svg {
+        width: 60px;
+        height: 60px;
+        filter: drop-shadow(0 0 18px rgba(220, 80, 100, 0.7));
+      }
+      @keyframes heartbeat {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        14% {
+          transform: scale(1.13);
+        }
+        28% {
+          transform: scale(1);
+        }
+        42% {
+          transform: scale(1.07);
+        }
+        56% {
+          transform: scale(1);
+        }
+      }
+
+      .label {
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #c47a6a;
+        margin-bottom: 1.2rem;
+      }
+      .message {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: clamp(20px, 4vw, 30px);
+        line-height: 1.55;
+        color: #f5e8df;
+        text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
+        margin-bottom: 2rem;
+      }
+      .divider {
+        width: 60px;
+        height: 1px;
+        margin: 0 auto 2rem;
+        background: linear-gradient(
+          to right,
+          transparent,
+          #c47a6a,
+          transparent
+        );
+      }
+      .sub {
+        font-size: 14px;
+        color: #a06858;
+        letter-spacing: 0.08em;
+        margin-bottom: 2.5rem;
+      }
+      .btn {
+        background: transparent;
+        border: 1px solid #c47a6a;
+        color: #f5e8df;
+        font-family: "Lora", serif;
+        font-size: 14px;
+        letter-spacing: 0.12em;
+        padding: 0.75rem 2rem;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .btn:hover {
+        background: #c47a6a22;
+      }
+
+      /* contract */
+      .contract-box {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid #c47a6a55;
+        border-radius: 4px;
+        padding: 1.8rem 1.8rem 1.4rem;
+        margin-bottom: 1.8rem;
+        text-align: left;
+      }
+      .contract-title {
+        font-family: "Playfair Display", serif;
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #c47a6a;
+        text-align: center;
+        margin-bottom: 1.4rem;
+      }
+      .contract-text {
+        font-size: 15px;
+        line-height: 1.75;
+        color: #e8d8ce;
+      }
+      .contract-text strong {
+        color: #f5e8df;
+        font-style: italic;
+      }
+      .contract-clause {
+        margin-bottom: 0.75rem;
+        padding-left: 1.2rem;
+        position: relative;
+      }
+      .contract-clause::before {
+        content: "§";
+        position: absolute;
+        left: 0;
+        color: #c47a6a;
+        font-size: 12px;
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        position: relative;
+        min-height: 60px;
+        align-items: center;
+      }
+      .btn-accept {
+        background: #c47a6a;
+        border: 1px solid #c47a6a;
+        color: #fff;
+        font-family: "Lora", serif;
+        font-size: 14px;
+        letter-spacing: 0.1em;
+        padding: 0.75rem 2rem;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+      .btn-accept:hover {
+        background: #b06858;
+      }
+      .btn-decline {
+        background: transparent;
+        border: 1px solid #5a3a3a;
+        color: #7a5a5a;
+        font-family: "Lora", serif;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        padding: 0.75rem 1.5rem;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        position: relative;
+      }
+
+      /* accepted */
+      .big-heart {
+        font-size: 72px;
+        line-height: 1;
+        margin-bottom: 1.2rem;
+        animation: pop 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+      @keyframes pop {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        70% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      .accepted-title {
+        font-family: "Playfair Display", serif;
+        font-style: italic;
+        font-size: clamp(22px, 4vw, 32px);
+        color: #f5e8df;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
+      }
+      .accepted-sub {
+        font-size: 14px;
+        color: #a06858;
+        letter-spacing: 0.08em;
+        line-height: 1.7;
+      }
+      .stamp {
+        margin-top: 2rem;
+        border: 2px solid #c47a6a88;
+        border-radius: 4px;
+        padding: 0.5rem 1.2rem;
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #c47a6a;
+        transform: rotate(-3deg);
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="bg"></canvas>
+    <div class="petals-wrap" id="petals"></div>
+
+    <!-- SCREEN 1 -->
+    <div class="screen active" id="intro">
+      <div class="heart-wrap">
+        <svg viewBox="0 0 64 60" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M32 54 C32 54 4 36 4 18 C4 9 11 2 20 2 C25.5 2 30.5 5 32 9 C33.5 5 38.5 2 44 2 C53 2 60 9 60 18 C60 36 32 54 32 54Z"
+            fill="#dc5064"
+            stroke="#f08090"
+            stroke-width="1"
+          />
+        </svg>
+      </div>
+      <p class="label">Voor jou</p>
+      <p class="message">Bedankt voor er altijd<br />voor me zijn, mam</p>
+      <div class="divider"></div>
+      <p class="sub">Van je zoon ♡</p>
+      <button class="btn" onclick="show('contract')">Lees verder ›</button>
+    </div>
+
+    <!-- SCREEN 2 -->
+    <div class="screen" id="contract">
+      <div class="contract-box">
+        <p class="contract-title">Officieel Verzoek</p>
+        <div class="contract-text">
+          <div class="contract-clause">
+            Uw zoon, wenst formeel te kennen te geven dat hij, met onmiddellijke
+            ingang, een dagelijks minimum instelt van
+            <strong>10 (tien) knuffels</strong>.
+          </div>
+          <div class="contract-clause">
+            Dit verzoek is bindend voor onbepaalde tijd en kan niet worden
+            ingetrokken door de ontvanger(moeder).
+          </div>
+          <div class="contract-clause">
+            Bij het niet nakomen van het dagelijks minimum behoudt de Verzoeker
+            zich het recht voor om zelf knuffels te komen halen, op een moment
+            naar keuze.
+          </div>
+          <div class="contract-clause">
+            Door het accepteren van dit verzoek verklaart u dat u de beste
+            moeder ter wereld bent. Dit is ook zonder acceptatie ook al het
+            geval.
+          </div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-accept" onclick="show('accepted')">
+          Ik ga akkoord
+        </button>
+        <button
+          class="btn-decline"
+          id="declineBtn"
+          onmouseover="flee()"
+          ontouchstart="flee()"
+        >
+          Niet akkoord
+        </button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3 -->
+    <div class="screen" id="accepted">
+      <div class="big-heart"></div>
+      <p class="accepted-title">Fijne verjaardag, mam</p>
+      <div class="divider" style="margin-top: 1.5rem"></div>
+      <p class="accepted-sub">
+        Uw handtekening is genoteerd.<br />De eerste knuffel is alvast jou.
+      </p>
+      <div class="stamp">Goedgekeurd</div>
+    </div>
+
+    <script>
+      /* canvas bg */
+      const canvas = document.getElementById("bg");
+      const ctx = canvas.getContext("2d");
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+      const stars = Array.from({ length: 120 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        r: Math.random() * 1.2 + 0.3,
+        a: Math.random(),
+        speed: Math.random() * 0.004 + 0.001,
+        phase: Math.random() * Math.PI * 2,
+      }));
+      let t = 0;
+      function drawBg() {
+        const w = canvas.width,
+          h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        const grad = ctx.createRadialGradient(
+          w * 0.5,
+          h * 0.55,
+          0,
+          w * 0.5,
+          h * 0.5,
+          Math.max(w, h) * 0.8,
+        );
+        grad.addColorStop(0, "#3d0c18");
+        grad.addColorStop(0.4, "#240810");
+        grad.addColorStop(1, "#0d0307");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+        const glow = ctx.createRadialGradient(
+          w * 0.5,
+          h * 0.5,
+          0,
+          w * 0.5,
+          h * 0.5,
+          w * 0.35,
+        );
+        glow.addColorStop(0, "rgba(180,60,80,0.12)");
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, w, h);
+        stars.forEach((s) => {
+          const alpha = 0.3 + 0.5 * Math.sin(t * s.speed + s.phase);
+          ctx.beginPath();
+          ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,230,210,${alpha * s.a})`;
+          ctx.fill();
+        });
+        t++;
+        requestAnimationFrame(drawBg);
+      }
+      drawBg();
+
+      /* petals */
+      const pcols = ["#e87080", "#f0a0b0", "#c84060", "#f4c0c8", "#d06070"];
+      const wrap = document.getElementById("petals");
+      function makePetal() {
+        const el = document.createElement("div");
+        el.className = "petal";
+        const size = 8 + Math.random() * 14;
+        el.style.cssText = `left:${Math.random() * 100}%;width:${size}px;height:${size * 0.7}px;background:${pcols[Math.floor(Math.random() * pcols.length)]};animation-duration:${5 + Math.random() * 7}s;animation-delay:${Math.random() * 4}s;opacity:0;`;
+        wrap.appendChild(el);
+        setTimeout(() => el.remove(), 16000);
+      }
+      setInterval(makePetal, 400);
+      for (let i = 0; i < 12; i++) makePetal();
+
+      /* screens */
+      function show(id) {
+        document
+          .querySelectorAll(".screen")
+          .forEach((s) => s.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+      }
+
+      /* flee button */
+      let fleeCount = 0;
+      function flee() {
+        fleeCount++;
+        const btn = document.getElementById("declineBtn");
+        const row = btn.parentElement;
+        const rowRect = row.getBoundingClientRect();
+        const maxX = 120,
+          maxY = 60;
+        const x = (Math.random() - 0.5) * maxX * 2;
+        const y = (Math.random() - 0.5) * maxY * 2;
+        btn.style.transform = `translate(${x}px,${y}px)`;
+        if (fleeCount >= 5) {
+          btn.style.opacity = "0";
+          btn.style.transition = "opacity 0.4s, transform 0.2s ease";
+          btn.style.pointerEvents = "none";
+        }
+      }
+    </script>
+  </body>
+</html>
